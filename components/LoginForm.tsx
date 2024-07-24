@@ -7,41 +7,31 @@ import {
   Text,
 } from "react-native";
 import { useState } from "react";
-import { Link } from "expo-router";
+import { Redirect } from "expo-router";
 import { Formik } from "formik";
 
 export default function NewUserForm() {
-  const [errorNombre, setErrorNombre] = useState(false);
-  const [errorEdad, setErrorEdad] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
+  if (isLogged) {
+    return <Redirect href="/dashboard" />;
+  }
   return (
     <View style={styles.container}>
       <Image
         style={styles.image}
         source={require("../assets/images/logo.jpeg")}
       />
-      <Text style={styles.welcome}>Bienvenido</Text>
+      <Text style={styles.welcome}>Hola, otra vez</Text>
 
       <Formik
-        initialValues={{ nombre: "", edad: "", email: "", password: "" }}
+        initialValues={{ email: "", password: "" }}
         onSubmit={(values) => {
-          setErrorNombre(false);
-          setErrorEdad(false);
           setErrorEmail(false);
           setErrorPassword(false);
           console.log(values);
-          if (
-            values.nombre.trim() === "" ||
-            values.nombre.trim().length === 0
-          ) {
-            setErrorNombre(true);
-            return;
-          }
-          if (values.edad.trim() === "" || +values.edad <= 0) {
-            setErrorEdad(true);
-            return;
-          }
+
           if (values.email.trim().length <= 6 || !values.email.includes("@")) {
             setErrorEmail(true);
             return;
@@ -50,39 +40,12 @@ export default function NewUserForm() {
             setErrorPassword(true);
             return;
           }
-          alert("Te has registrado correctamente");
+          setIsLogged(true);
         }} // Update for clarity
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <View>
             <View style={styles.inputContainer}>
-              <View>
-                <TextInput
-                  placeholder="Nombre"
-                  style={styles.input}
-                  onChangeText={handleChange("nombre")}
-                  onBlur={handleBlur("nombre")}
-                  value={values.nombre}
-                />
-                {errorNombre && (
-                  <Text style={styles.errorText}>
-                    El campo esta vacio, intentalo de nuevo
-                  </Text>
-                )}
-              </View>
-              <View>
-                <TextInput
-                  placeholder="Edad"
-                  style={styles.input}
-                  onChangeText={handleChange("edad")}
-                  onBlur={handleBlur("edad")}
-                  value={values.edad}
-                  keyboardType="numeric" // Set keyboard type for numbers
-                />
-                {errorEdad && (
-                  <Text style={styles.errorText}>Ingresa tu edad</Text>
-                )}
-              </View>
               <View>
                 <TextInput
                   placeholder="Email"
@@ -93,7 +56,9 @@ export default function NewUserForm() {
                   keyboardType="email-address" // Set keyboard type for email
                 />
                 {errorEmail && (
-                  <Text style={styles.errorText}>Ingresa un email valido</Text>
+                  <Text style={styles.errorText}>
+                    Algo esta mal con el email, intentalo de nuevo
+                  </Text>
                 )}
               </View>
               <View>
@@ -107,19 +72,15 @@ export default function NewUserForm() {
                 />
                 {errorPassword && (
                   <Text style={styles.errorText}>
-                    Ingresa una contraseña valida
+                    Contraseña incorrecta, intentalo de nuevo
                   </Text>
                 )}
               </View>
             </View>
-            <Pressable style={styles.buttonRegister} onPress={handleSubmit}>
-              <Text style={styles.legendRegister}>Registrarse</Text>
+
+            <Pressable style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.legend}>Iniciar Sesión</Text>
             </Pressable>
-            <Link href="/create-account" asChild>
-              <Pressable style={styles.buttonLogIn}>
-                <Text style={styles.legendLogIn}>Iniciar Sesión</Text>
-              </Pressable>
-            </Link>
           </View>
         )}
       </Formik>
@@ -135,6 +96,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
+    marginBottom: 5,
     borderRadius: 24,
     width: 300,
     borderColor: "#000",
@@ -146,8 +108,9 @@ const styles = StyleSheet.create({
     fontFamily: "Raleway",
   },
   container: {
-    marginTop: 100,
+    flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     fontFamily: "SpaceMono",
   },
   image: {
@@ -159,30 +122,21 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "RalewayB",
   },
-  buttonRegister: {
+  button: {
     padding: 16,
     borderRadius: 100,
     backgroundColor: "#222",
     marginBottom: 20,
   },
-  buttonLogIn: {
-    padding: 16,
-    borderRadius: 100,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#222",
-  },
-  legendRegister: {
+  legend: {
     textAlign: "center",
     color: "#fff",
     fontFamily: "RalewayB",
   },
-  legendLogIn: {
-    textAlign: "center",
-    color: "#222",
-    fontFamily: "Raleway",
-  },
   errorText: {
     color: "#f00",
+    paddingLeft: 12,
+    opacity: 0.5,
+    fontSize: 12,
   },
 });
