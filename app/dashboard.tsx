@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import CarList from "@/components/CarList";
+import Search from "@/components/Search";
 export default function Page() {
   const [actualPage, setActualPage] = useState(1);
   const [list, setList] = useState([]);
@@ -49,9 +50,11 @@ export default function Page() {
   return (
     <SafeAreaView>
       <View style={{ marginTop: 100 }}>
+        <Search />
         <ScrollView>
           <Text
             style={{
+              marginTop: 20,
               marginBottom: 20,
               textAlign: "center",
               fontFamily: "RalewayB",
@@ -78,7 +81,7 @@ export default function Page() {
 
 const styles = StyleSheet.create({
   buttomMore: {
-    marginBottom: 20,
+    marginBottom: 150,
     marginLeft: 15,
     marginRight: 15,
     padding: 16,

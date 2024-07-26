@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   container: {
     marginLeft: 15,
     marginRight: 15,
-    marginBottom: 50,
+    marginBottom: 20,
     shadowColor: "#000",
     gap: 10,
   },
