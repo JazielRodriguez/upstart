@@ -30,7 +30,6 @@ export default function NewUserForm() {
           setErrorEdad(false);
           setErrorEmail(false);
           setErrorPassword(false);
-          console.log(values);
           if (
             values.nombre.trim() === "" ||
             values.nombre.trim().length === 0

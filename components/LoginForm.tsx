@@ -30,7 +30,6 @@ export default function NewUserForm() {
         onSubmit={(values) => {
           setErrorEmail(false);
           setErrorPassword(false);
-          console.log(values);
 
           if (values.email.trim().length <= 6 || !values.email.includes("@")) {
             setErrorEmail(true);

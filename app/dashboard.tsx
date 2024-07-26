@@ -1,10 +1,18 @@
-import { Pressable, ScrollView, View, Text, SafeAreaView } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  SafeAreaView,
+} from "react-native";
 import { useEffect, useState } from "react";
 import CarList from "@/components/CarList";
 export default function Page() {
   const [actualPage, setActualPage] = useState(1);
   const [list, setList] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [secIsLoading, setSecIsLoading] = useState(false);
   useEffect(() => {
     const getData = async () => {
       const url = `https://car-data.p.rapidapi.com/cars?&limit=10&page=${actualPage}`;
@@ -20,11 +28,13 @@ export default function Page() {
       try {
         const response = await fetch(url, options);
         const result = await response.json();
-        console.log(result);
+
         if (list.length === 0) {
           setList(result);
+          setIsLoading(false);
         } else {
           setList((prev) => prev.concat(result));
+          setSecIsLoading(false);
         }
       } catch (error) {
         console.error(error);
@@ -34,6 +44,7 @@ export default function Page() {
   }, [actualPage]);
   const onGetMoreCars = () => {
     setActualPage((prev) => prev + 1);
+    setSecIsLoading(true);
   };
   return (
     <SafeAreaView>
@@ -49,10 +60,14 @@ export default function Page() {
           >
             Autos con compatibilidad
           </Text>
-          <CarList cars={list} />
+          <CarList
+            cars={list}
+            isLoading={isLoading}
+            secIsLoading={secIsLoading}
+          />
           {list.length > 0 && (
-            <Pressable onPress={onGetMoreCars}>
-              <Text>Mostrar mas</Text>
+            <Pressable style={styles.buttomMore} onPress={onGetMoreCars}>
+              <Text style={styles.legendMore}>Mostrar mas</Text>
             </Pressable>
           )}
         </ScrollView>
@@ -60,3 +75,21 @@ export default function Page() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  buttomMore: {
+    marginBottom: 20,
+    marginLeft: 15,
+    marginRight: 15,
+    padding: 16,
+    borderRadius: 100,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#222",
+  },
+  legendMore: {
+    textAlign: "center",
+    color: "#222",
+    fontFamily: "Raleway",
+  },
+});
