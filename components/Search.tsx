@@ -1,39 +1,27 @@
 import Foundation from "@expo/vector-icons/Foundation";
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { Link } from "expo-router";
 import { Formik } from "formik";
-import { Linking, Pressable, Text, TextInput } from "react-native";
+import { Pressable, Text, TextInput } from "react-native";
 
 export default function Search() {
   const [errorSearch, setErrorSearch] = useState(false);
-  const openLink = async (url: string) => {
-    setErrorSearch(false);
-    if (url.trim() === "") {
-      setErrorSearch(true);
-      return;
-    }
-    const path = `https://www.google.com/search?q=${url}`;
-    try {
-      const supported = await Linking.canOpenURL(path);
+  const [result, setResult] = useState("");
 
-      if (supported) {
-        await Linking.openURL(path);
-      } else {
-        console.log("Don't know how to open URI: " + path);
-      }
-    } catch (error) {
-      console.error("An error occurred", error);
-    }
-  };
   return (
     <View style={styles.container}>
       <Formik
         initialValues={{ search: "" }}
         onSubmit={(values) => {
-          openLink(values.search);
+          if (values.search.length <= 0) {
+            setErrorSearch(true);
+            return;
+          }
+          setResult(values.search);
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {({ handleChange, handleBlur, values }) => (
           <View>
             <View style={styles.inputContainer}>
               <View>
@@ -47,10 +35,16 @@ export default function Search() {
                   />
                 </View>
               </View>
-              <Pressable onPress={handleSubmit} style={styles.pressable}>
-                <Text>
+
+              <Pressable style={styles.pressable}>
+                <Link
+                  href={{
+                    pathname: "/search/[id]",
+                    params: { id: result },
+                  }}
+                >
                   <Foundation name="magnifying-glass" size={24} color="black" />
-                </Text>
+                </Link>
               </Pressable>
             </View>
             {errorSearch && (
