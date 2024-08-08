@@ -1,6 +1,6 @@
 import Foundation from "@expo/vector-icons/Foundation";
 import { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, SafeAreaView } from "react-native";
 import { Link } from "expo-router";
 import { Formik } from "formik";
 import { Pressable, Text, TextInput } from "react-native";
@@ -37,12 +37,7 @@ export default function Search() {
               </View>
 
               <Pressable style={styles.pressable}>
-                <Link
-                  href={{
-                    pathname: "/search/[id]",
-                    params: { id: result },
-                  }}
-                >
+                <Link href="/search">
                   <Foundation name="magnifying-glass" size={24} color="black" />
                 </Link>
               </Pressable>
